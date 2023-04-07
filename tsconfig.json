@@ -1,6 +1,15 @@
 {
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
-    "strict": true
+    "module": "ES6",
+        "allowJs": false,
+        "checkJs": false,
+        "removeComments": true,
+        "noEmit": true,
+        "pretty": true,
+        "skipLibCheck": true,
+        "strict": true,
+        "moduleResolution": "node",
+        "esModuleInterop": true
   }
 }
