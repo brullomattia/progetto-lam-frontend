@@ -1,6 +1,5 @@
 import { StatusBar } from "expo-status-bar";
 import {
-  Button,
   ImageBackground,
   SafeAreaView,
   StyleSheet,
@@ -10,12 +9,9 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import Constants from "expo-constants";
 import * as Application from "expo-application";
-import axios from "axios";
 import { useEffect, useState } from "react";
 import React from "react";
-import { base_url, headers } from "../App";
 import { useNavigation } from "@react-navigation/native";
 import { auth2, postUser } from "../api/useFetch";
 
@@ -26,8 +22,10 @@ export const HomePage = () => {
   const [data, setData]: any = useState(null);
   const [error, setError] = useState("");
   const [loaded, setLoaded] = useState(false);
+  const [userId, setUserId] = useState("");
   const [nickname, setNickname] = useState("");
   const navigation = useNavigation();
+  ;
 
   useEffect(() => {
     auth();
@@ -38,6 +36,7 @@ export const HomePage = () => {
     await auth2(id_mobile)
       .then((res) => {
         setData(res.data);
+        setUserId(res.data.id);
       })
       .catch((error) => {
         console.log(error);
@@ -48,7 +47,8 @@ export const HomePage = () => {
     await postUser(id_mobile, nickname)
       .then((res) => {
         console.log(res.status);
-        navigation.navigate("HomeFront");
+        setUserId(res.data.id);
+        navigation.navigate("HomeFront" as never, { userId } as never);
       })
       .catch((error) => {
         console.warn("enter another nickname : 4 or more characters");
@@ -81,7 +81,7 @@ export const HomePage = () => {
 
             <View style={styles.form}>
               <TouchableOpacity
-                onPress={() => navigation.navigate("HomeFront")}
+                onPress={() => navigation.navigate("HomeFront" as never, { userId } as never)}
                 style={styles.buttonLogin}
               >
                 <Text style={styles.buttonLoginText}>Inizia a giocare!</Text>
@@ -172,14 +172,6 @@ const styles = StyleSheet.create({
   form: {
     marginBottom: 30,
   },
-  iconLock: {
-    color: "orange",
-    position: "absolute",
-    fontSize: 16,
-    top: 22,
-    left: 22,
-    zIndex: 10,
-  },
   inputPassword: {
     height: 60,
     borderRadius: 30,
@@ -199,9 +191,5 @@ const styles = StyleSheet.create({
   },
   buttonLoginText: {
     ...TEXT,
-  },
-  action: {
-    flexDirection: "row",
-    justifyContent: "space-between",
   },
 });
