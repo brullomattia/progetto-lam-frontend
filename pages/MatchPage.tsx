@@ -5,17 +5,13 @@ import {
   SafeAreaView,
   StyleSheet,
   Text,
-  TextInput,
   TextStyle,
   TouchableOpacity,
   View,
 } from "react-native";
-import * as Application from "expo-application";
-import { useEffect, useState } from "react";
 import React from "react";
 import { useNavigation } from "@react-navigation/native";
-import { auth2, joinMatch, postMatch, postUser, startGame } from "../api/useFetch";
-import { ScrollView } from "react-native-gesture-handler";
+import { joinMatch, postMatch, startGame } from "../api/useFetch";
 
 export const MatchPage = (props: any) => {
   const userId = props.route.params.userId;
