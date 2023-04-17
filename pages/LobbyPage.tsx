@@ -1,16 +1,17 @@
 import {
-    SafeAreaView,
     StyleSheet,
     Text,
     TextStyle,
     TouchableOpacity,
     View,
-    ScrollView
+    ScrollView,
+    Easing
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { Card } from "../components/Card";
 import { getNumber, ready } from "../api/useFetch";
+import { Notifier } from "react-native-notifier";
 
 export const LobbyPage = (props: any) => {
     const userId = props.route.params.userId;
@@ -19,14 +20,22 @@ export const LobbyPage = (props: any) => {
     const first: any = props.route.params.match.numbers[0];
     const [isDisabled, setIsDisabled] = useState(false);
     const [curNumber, setCurNumber] = useState(0);
-    const [extracted, setExtracted] = useState(new Set());
+    const [extracted, setExtracted]: any = useState(new Set());
+
+
     useEffect(() => {
         const interval = setInterval(async () => {
+
             const { data } = await getNumber(match.id);
+
+            if (data.bingo == true) {
+                navigation.navigate("EndGamePage" as never, { userId } as never);
+                clearInterval(interval);
+            }
 
             if (data.number != first) {
                 setCurNumber(data.number);
-                setExtracted(new Set(match.numbers.slice(0, data.actual_move + 1)))
+                setExtracted(new Set(match.numbers.slice(1, data.actual_move + 1)))
             }
 
         }, 1000);
@@ -36,19 +45,23 @@ export const LobbyPage = (props: any) => {
 
 
     const navigation = useNavigation();
-    const onCinquinaPressed = () => {
 
-    };
-
-    const onBingoPressed = () => {
-
-    };
 
     const onReadyPressed = async () => {
-
+        styles.buttonReady.opacity = 0;
+        setIsDisabled(true);
         await ready(match?.id);
         console.warn("La partita inizierà a breve!")
-        setIsDisabled(true);
+        Notifier.showNotification({
+            title: 'La partita inizierà a breve! ',
+            duration: 3000,
+            showAnimationDuration: 300,
+            showEasing: Easing.bounce,
+            onHidden: () => console.log('Hidden'),
+            onPress: () => console.log('Press'),
+            hideOnPress: true,
+
+        });
         styles.buttonReady.opacity = 0;
 
     };
@@ -71,7 +84,7 @@ export const LobbyPage = (props: any) => {
             <View style={styles.textWrapper}>
                 <Text style={styles.hiText}>Numero corrente: {curNumber} </Text>
                 <Text style={styles.userText}>
-                    Numeri estratti fino ad ora:
+                    Numeri estratti : {Array.from(extracted).toString()}
 
                 </Text>
             </View>
@@ -80,8 +93,8 @@ export const LobbyPage = (props: any) => {
                 {cards?.map((card: any, i: number) =>
                     <Card
                         key={i + 1}
-                        onBingoPressed={onBingoPressed}
-                        onCinquinaPressed={onCinquinaPressed}
+                        match_id={match.id}
+                        user_id={userId}
                         card={card}
                         cardNumber={i + 1}
                         extracted={extracted} />
@@ -107,14 +120,15 @@ const styles1 = StyleSheet.create({
 
 const TEXT: TextStyle = {
     color: "black",
-    textAlign: "center",
+    textAlign: "left",
+    marginLeft: 15,
+    marginRight: 15
 };
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: "orange",
-        //paddingTop: Constants.statusBarHeight,
     },
     content: {
         paddingHorizontal: 30,
@@ -122,7 +136,7 @@ const styles = StyleSheet.create({
     form: {
         marginBottom: 100,
     },
-    buttonLogin: {
+    button: {
         height: 30,
         borderRadius: 25,
         backgroundColor: "white",
@@ -137,7 +151,7 @@ const styles = StyleSheet.create({
         marginTop: 5,
         opacity: 1
     },
-    buttonLoginText: {
+    buttonText: {
         ...TEXT,
     },
     buttonReadyText: {

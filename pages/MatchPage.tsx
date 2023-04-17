@@ -15,6 +15,7 @@ import { useEffect, useState } from "react";
 import React from "react";
 import { useNavigation } from "@react-navigation/native";
 import { auth2, joinMatch, postMatch, postUser, startGame } from "../api/useFetch";
+import { ScrollView } from "react-native-gesture-handler";
 
 export const MatchPage = (props: any) => {
   const userId = props.route.params.userId;
@@ -47,7 +48,7 @@ export const MatchPage = (props: any) => {
       </ImageBackground>
 
       <SafeAreaView style={styles.container}>
-        <StatusBar style="light" />
+        <StatusBar style="auto" />
 
         <View style={styles.content}>
           <View style={styles.textWrapper}>
@@ -89,10 +90,10 @@ export const MatchPage = (props: any) => {
             </View>
 
             <TouchableOpacity
-              style={styles.buttonLogin}
+              style={styles.buttonLobby}
               onPress={onPlayPressed}
             >
-              <Text style={styles.buttonLoginText}>Vai alla lobby!</Text>
+              <Text style={styles.buttonLobbyText}>Vai alla lobby!</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -114,9 +115,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: "column",
-    backgroundColor: "orange",
-
-    //paddingTop: Constants.statusBarHeight,
+    backgroundColor: "orange"
   },
   content: {
     paddingHorizontal: 50,
@@ -136,27 +135,14 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 30,
   },
-  form: {
-    marginBottom: 30,
-  },
-  inputPassword: {
-    height: 60,
-    borderRadius: 30,
-    paddingHorizontal: 30,
-    fontSize: 20,
-    color: "#929292",
-    backgroundColor: "#fff",
-    textAlign: "center",
-    textAlignVertical: "center",
-  },
-  buttonLogin: {
+  buttonLobby: {
     height: 50,
     borderRadius: 25,
     backgroundColor: "white",
     justifyContent: "center",
     marginTop: 15,
   },
-  buttonLoginText: {
+  buttonLobbyText: {
     ...TEXT,
   },
 });

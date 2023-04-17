@@ -12,26 +12,26 @@ import {
 import React, { useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { DataTable } from "react-native-paper";
-import { getMatch, getMatches, joinMatch } from "../api/useFetch";
+import { getUsers } from "../api/useFetch";
 
-export const MatchListPage = (props: any) => {
-    const userId = props.route.params.userId;
-    const [matches, setMatches]: any = useState([]);
-    const [number, setNumber] = useState("");
-    //console.log(matches[0].id)
+export const LeaderboardPage = () => {
+    const [users, setUsers]: any = useState([]);
 
     useEffect(() => {
-        //setUserId(props.route.params.userId);
-        listMatches();
+
+        listUsers();
     }, [])
 
 
 
 
-    const listMatches = async () => {
-        await getMatches()
+    const listUsers = async () => {
+        await getUsers()
             .then((res) => {
-                setMatches(res.data.data);
+                setUsers((res.data.data).sort(function (a: any, b: any) {
+                    return (b.points) - (a.points);
+                }))
+
             })
             .catch((error) => {
                 console.log(error);
@@ -40,21 +40,8 @@ export const MatchListPage = (props: any) => {
 
     const navigation = useNavigation();
 
-    const onPlayPressed = async (match_id: number) => {
-
-        const { data: match } = await getMatch(match_id);
-
-        const matchdata = await match.data;
-
-        const { data: cards } = await joinMatch(userId, Number(match.data.id));
-
-
-
-        navigation.navigate("LobbyPage" as never, { userId, match: matchdata, cards } as never);
-    };
-
-    const onCreateMatchPressed = () => {
-        navigation.navigate("MatchPage" as never, { userId } as never);
+    const onHomePressed = () => {
+        navigation.navigate("HomePage" as never);
     };
 
 
@@ -74,48 +61,45 @@ export const MatchListPage = (props: any) => {
 
                 <View>
                     <View style={styles.textWrapper}>
-                        <Text style={styles.hiText}>Lista partite in attesa:</Text>
+                        <Text style={styles.hiText}>Classifica BINGO-APP</Text>
                     </View>
 
                     <DataTable>
                         <DataTable.Header>
                             <DataTable.Title >
-                                <Text>Id</Text>
+                                <Text>Nickname</Text>
                             </DataTable.Title>
-                            <DataTable.Title  >Players</DataTable.Title>
-                            <DataTable.Title >State</DataTable.Title>
+                            <DataTable.Title >Points</DataTable.Title>
+                            <DataTable.Title  >Iscritto dal</DataTable.Title>
                             <DataTable.Title >-</DataTable.Title>
                         </DataTable.Header>
 
 
                         {
-                            matches.map((curMatch: any, i: number) => {
-                                const { id, players, state } = curMatch;
+
+                            users.map((curUser: any, i: number) => {
+                                const { createdAt, nickname, points } = curUser;
 
                                 return (
                                     <DataTable.Row key={`match-${i}`}>
-                                        <DataTable.Cell>{id}</DataTable.Cell>
-                                        <DataTable.Cell>{players}</DataTable.Cell>
-                                        <DataTable.Cell>{state}</DataTable.Cell>
-                                        <DataTable.Cell><TouchableOpacity
-                                            onPress={async () => onPlayPressed(id)}
-                                            style={styles.buttonPlay}
-                                        >
-                                            <Text style={styles.buttonPlayText}>  Gioca!  </Text>
-                                        </TouchableOpacity></DataTable.Cell>
+                                        <DataTable.Cell>{nickname}</DataTable.Cell>
+                                        <DataTable.Cell>{points}</DataTable.Cell>
+                                        <DataTable.Cell>{createdAt}</DataTable.Cell>
+                                        <DataTable.Cell>{ }</DataTable.Cell>
                                     </DataTable.Row>
                                 )
                             })
                         }
 
                     </DataTable>
-
                     <TouchableOpacity
-                        onPress={onCreateMatchPressed}
+                        onPress={onHomePressed}
                         style={styles.button}
                     >
-                        <Text style={styles.buttonText}>Crea una nuova partita!</Text>
+                        <Text style={styles.buttonText}>Torna alla Home Page!</Text>
                     </TouchableOpacity>
+
+
                 </View>
             </ScrollView>
         </SafeAreaView>
@@ -165,7 +149,7 @@ const styles = StyleSheet.create({
     },
     hiText: {
         ...TEXT,
-        fontSize: 20,
+        fontSize: 30,
         lineHeight: 50,
         fontWeight: "bold",
     },

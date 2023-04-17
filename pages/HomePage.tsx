@@ -1,4 +1,5 @@
 import { StatusBar } from "expo-status-bar";
+import { Notifier, Easing } from 'react-native-notifier';
 import {
   ImageBackground,
   SafeAreaView,
@@ -51,7 +52,16 @@ export const HomePage = () => {
         navigation.navigate("HomeFront" as never, { userId } as never);
       })
       .catch((error) => {
-        console.warn("enter another nickname : 4 or more characters");
+
+        Notifier.showNotification({
+          title: 'ERROR NICKNAME',
+          description: 'enter another nickname : 4 or more characters',
+          showAnimationDuration: 800,
+          showEasing: Easing.bounce,
+          onHidden: () => console.log('Hidden'),
+          onPress: () => console.log('Press'),
+
+        });
         console.log(error);
       });
   };
@@ -71,7 +81,7 @@ export const HomePage = () => {
         </ImageBackground>
 
         <SafeAreaView style={styles.container}>
-          <StatusBar style="light" />
+          <StatusBar style="auto" />
 
           <View style={styles.content}>
             <View style={styles.textWrapper}>
@@ -102,7 +112,7 @@ export const HomePage = () => {
         </ImageBackground>
 
         <SafeAreaView style={styles.container}>
-          <StatusBar style="light" />
+          <StatusBar style="auto" />
 
           <View style={styles.content}>
             <View style={styles.textWrapper}>
@@ -114,7 +124,7 @@ export const HomePage = () => {
 
             <View style={styles.form}>
               <TextInput
-                style={styles.inputPassword}
+                style={styles.input}
                 value={nickname}
                 onChangeText={setNickname}
                 placeholder="Inserisci il tuo nickname"
@@ -127,6 +137,8 @@ export const HomePage = () => {
               >
                 <Text style={styles.buttonLoginText}>Inizia a giocare!</Text>
               </TouchableOpacity>
+
+
             </View>
           </View>
         </SafeAreaView>
@@ -172,7 +184,7 @@ const styles = StyleSheet.create({
   form: {
     marginBottom: 30,
   },
-  inputPassword: {
+  input: {
     height: 60,
     borderRadius: 30,
     paddingHorizontal: 30,

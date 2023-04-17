@@ -91,3 +91,48 @@ export const getNumber = async (match_id: number) => {
   });
   return res;
 };
+
+export const getCinquina = async (user_id: string, match_id: number) => {
+  const res = await axios({
+    method: "put",
+    url: base_url + "/matches/checkFive",
+    headers: headers.headers,
+    data: {
+      user_id: user_id,
+      match_id: match_id,
+    },
+  });
+  return res;
+};
+
+export const getBingo = async (user_id: string, match_id: number) => {
+  const res = await axios({
+    method: "put",
+    url: base_url + "/matches/checkBingo",
+    headers: headers.headers,
+    data: {
+      user_id: user_id,
+      match_id: match_id,
+    },
+  });
+  return res;
+};
+
+export const getMatch = async (match_id: number) => {
+  const res = await axios({
+    method: "get",
+    url: base_url + "/match/" + match_id,
+    headers: headers.headers,
+  });
+  return res;
+};
+
+export const getUsers = async () => {
+  const res = await axios({
+    method: "get",
+    url: base_url + "/users",
+    headers: headers.headers,
+  });
+  //console.log(res.data.data);
+  return res;
+};

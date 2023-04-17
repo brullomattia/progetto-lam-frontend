@@ -8,16 +8,11 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import Constants from "expo-constants";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
-import { DataTable } from "react-native-paper";
 
 export const HomeFront = (props: any) => {
   const userId = props.route.params.userId;
-  useEffect(() => {
-    //onSignInPressed();
-  }, []);
 
   const navigation = useNavigation();
   const onNewGamePressed = () => {
@@ -26,6 +21,10 @@ export const HomeFront = (props: any) => {
   const onGamePressed = () => {
     navigation.navigate("MatchListPage" as never, { userId } as never
     );
+  };
+
+  const onLeaderBoardPressed = () => {
+    navigation.navigate("LeaderboardPage" as never);
   };
   return (
     <SafeAreaView style={styles1.container}>
@@ -37,18 +36,22 @@ export const HomeFront = (props: any) => {
       </ImageBackground>
 
       <SafeAreaView style={styles.container}>
-        <StatusBar style="light" />
+        <StatusBar style="auto" />
 
         <View>
           <TouchableOpacity
             onPress={onNewGamePressed}
-            style={styles.buttonLogin}
+            style={styles.button}
           >
-            <Text style={styles.buttonLoginText}>Crea una nuova partita!</Text>
+            <Text style={styles.buttonText}>Crea una nuova partita!</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.buttonLogin} onPress={onGamePressed}>
-            <Text style={styles.buttonLoginText}>Unisciti ad una partita!</Text>
+          <TouchableOpacity style={styles.button} onPress={onGamePressed}>
+            <Text style={styles.buttonText}>Unisciti ad una partita!</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.button} onPress={onLeaderBoardPressed}>
+            <Text style={styles.buttonText}>Vai alla classifica!</Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>
@@ -82,14 +85,14 @@ const styles = StyleSheet.create({
   form: {
     marginBottom: 100,
   },
-  buttonLogin: {
+  button: {
     height: 60,
     borderRadius: 25,
     backgroundColor: "white",
     justifyContent: "center",
     marginTop: 15,
   },
-  buttonLoginText: {
+  buttonText: {
     ...TEXT,
   },
 });
