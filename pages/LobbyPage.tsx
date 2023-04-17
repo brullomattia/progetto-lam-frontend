@@ -84,7 +84,9 @@ export const LobbyPage = (props: any) => {
             <View style={styles.textWrapper}>
                 <Text style={styles.hiText}>Numero corrente: {curNumber} </Text>
                 <Text style={styles.userText}>
-                    Numeri estratti : {Array.from(extracted).toString()}
+                    Numeri estratti : {(Array.from(extracted)).sort(function (a: any, b: any) {
+                        return (a) - (b);
+                    }).toString()}
 
                 </Text>
             </View>
@@ -109,14 +111,6 @@ export const LobbyPage = (props: any) => {
     );
 };
 
-const styles1 = StyleSheet.create({
-    image: {
-        flex: 1 / 5,
-    },
-    container: {
-        flex: 1,
-    },
-});
 
 const TEXT: TextStyle = {
     color: "black",
