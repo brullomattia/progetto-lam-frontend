@@ -5,12 +5,13 @@ import {
     TouchableOpacity,
     View,
     ScrollView,
-    Easing
+    Easing,
+    ImageBackground
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { Card } from "../components/Card";
-import { getNumber, ready } from "../api/useFetch";
+import { exit, getNumber, ready } from "../api/useFetch";
 import { Notifier } from "react-native-notifier";
 
 export const LobbyPage = (props: any) => {
@@ -22,21 +23,21 @@ export const LobbyPage = (props: any) => {
     const [curNumber, setCurNumber] = useState(0);
     const [extracted, setExtracted]: any = useState(new Set());
 
-
     useEffect(() => {
         const interval = setInterval(async () => {
 
             const { data } = await getNumber(match.id);
 
             if (data.bingo == true) {
+                styles.buttonReady.opacity = 1;
                 navigation.navigate("EndGamePage" as never, { userId } as never);
                 clearInterval(interval);
             }
 
-            if (data.number != first) {
-                setCurNumber(data.number);
-                setExtracted(new Set(match.numbers.slice(1, data.actual_move + 1)))
-            }
+
+            setCurNumber(data.number);
+            setExtracted(new Set(match.numbers.slice(1, data.actual_move + 1)))
+
 
         }, 1000);
         return () => clearInterval(interval);
@@ -51,7 +52,7 @@ export const LobbyPage = (props: any) => {
         styles.buttonReady.opacity = 0;
         setIsDisabled(true);
         await ready(match?.id);
-        console.warn("La partita inizierà a breve!")
+
         Notifier.showNotification({
             title: 'La partita inizierà a breve! ',
             duration: 3000,
@@ -66,21 +67,36 @@ export const LobbyPage = (props: any) => {
 
     };
 
+    const onBackPressed = async () => {
+        await exit(match?.id);
+        navigation.navigate("HomeFront" as never, { userId } as never);
+    };
+
 
     return (
 
 
 
         <View style={styles.container}>
-            <TouchableOpacity
-                onPress={onReadyPressed}
-                style={styles.buttonReady}
-                disabled={isDisabled}
+            <ImageBackground
 
-
+                source={require("../assets/bingo.png")}
             >
-                <Text style={styles.buttonReadyText}>Pronto!</Text>
-            </TouchableOpacity>
+                <TouchableOpacity
+                    onPress={onReadyPressed}
+                    style={styles.buttonReady}
+                    disabled={isDisabled}>
+                    <Text style={styles.buttonReadyText}>Pronto!</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                    onPress={onBackPressed}
+                    style={styles.buttonReady}
+                    disabled={isDisabled}>
+                    <Text style={styles.buttonReadyText}>Torna indietro!</Text>
+                </TouchableOpacity>
+
+            </ImageBackground>
             <View style={styles.textWrapper}>
                 <Text style={styles.hiText}>Numero corrente: {curNumber} </Text>
                 <Text style={styles.userText}>
@@ -90,6 +106,7 @@ export const LobbyPage = (props: any) => {
 
                 </Text>
             </View>
+
 
             <ScrollView>
                 {cards?.map((card: any, i: number) =>
@@ -142,7 +159,8 @@ const styles = StyleSheet.create({
         borderRadius: 25,
         backgroundColor: "white",
         justifyContent: "center",
-        marginTop: 5,
+        marginTop: 10,
+        marginBottom: 10,
         opacity: 1
     },
     buttonText: {

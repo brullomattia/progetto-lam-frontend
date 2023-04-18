@@ -14,7 +14,12 @@ export const Card = ({ user_id, match_id, card, cardNumber, extracted }: any) =>
     const [isDisabledCinquina, setIsDisabledCinquina] = useState(false);
     const [isDisabledBingo, setIsDisabledBingo] = useState(false);
     const navigation = useNavigation();
-    styles.buttonLogin.opacity = 1;
+
+    if (isDisabledCinquina) {
+        styles.buttonCinquina.opacity = 0;
+    } else {
+        styles.buttonCinquina.opacity = 1;
+    }
 
     let rows: number[][] = [];
     for (let i = 0; i < 20; i += 5) {
@@ -35,7 +40,7 @@ export const Card = ({ user_id, match_id, card, cardNumber, extracted }: any) =>
 
                 });
             } else {
-                styles.buttonLogin.opacity = 0;
+
                 setIsDisabledCinquina(true);
                 Notifier.showNotification({
                     title: res.data.message,
@@ -110,18 +115,18 @@ export const Card = ({ user_id, match_id, card, cardNumber, extracted }: any) =>
             )}
             <TouchableOpacity
                 onPress={async () => onCinquinaPressed(user_id, match_id)}
-                style={styles.buttonLogin}
+                style={styles.buttonCinquina}
                 disabled={isDisabledCinquina}
             >
-                <Text style={styles.buttonLoginText}>Cinquina!</Text>
+                <Text style={styles.buttonText}>Cinquina!</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
                 onPress={async () => onBingoPressed(user_id, match_id)}
-                style={styles.buttonLogin}
+                style={styles.buttonBingo}
                 disabled={isDisabledBingo}
             >
-                <Text style={styles.buttonLoginText}>Bingo!</Text>
+                <Text style={styles.buttonText}>Bingo!</Text>
             </TouchableOpacity>
         </DataTable>
     )
@@ -143,7 +148,15 @@ const styles = StyleSheet.create({
     form: {
         marginBottom: 100,
     },
-    buttonLogin: {
+    buttonCinquina: {
+        height: 30,
+        borderRadius: 25,
+        backgroundColor: "white",
+        justifyContent: "center",
+        marginTop: 5,
+        opacity: 1
+    },
+    buttonBingo: {
         height: 30,
         borderRadius: 25,
         backgroundColor: "white",
@@ -159,7 +172,7 @@ const styles = StyleSheet.create({
         marginTop: 5,
         opacity: 1
     },
-    buttonLoginText: {
+    buttonText: {
         ...TEXT,
     },
     buttonReadyText: {

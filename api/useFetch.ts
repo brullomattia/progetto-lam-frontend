@@ -83,6 +83,15 @@ export const ready = async (match_id: number) => {
   return res;
 };
 
+export const exit = async (match_id: number) => {
+  const res = await axios({
+    method: "get",
+    url: base_url + "/users/exit/" + match_id,
+    headers: headers.headers,
+  });
+  return res;
+};
+
 export const getNumber = async (match_id: number) => {
   const res = await axios({
     method: "get",
